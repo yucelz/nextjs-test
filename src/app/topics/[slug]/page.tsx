@@ -1,27 +1,26 @@
-import Link from 'next/link';
-import PostShow from '@/components/posts/post-show';
-import CommentList from '@/components/comments/comment-list';
-import CommentCreateForm from '@/components/comments/comment-create-form';
-import paths from '@/paths';
+import PostCreateForm from '@/components/posts/post-create-form';
+import PostList from '@/components/posts/post-list';
+import { fetchPostsByTopicSlug } from '@/db/queries/posts';
 
-interface PostShowPageProps {
+interface TopicShowPageProps {
   params: {
     slug: string;
-    postId: string;
   };
 }
 
-export default async function PostShowPage({ params }: PostShowPageProps) {
-  const { slug, postId } = params;
+export default function TopicShowPage({ params }: TopicShowPageProps) {
+  const { slug } = params;
 
   return (
-    <div className="space-y-3">
-      <Link className="underline decoration-solid" href={paths.topicShow(slug)}>
-        {'< '}Back to {slug}
-      </Link>
-      <PostShow postId={postId} />
-      <CommentCreateForm postId={postId} startOpen />
-      {/* <CommentList /> */}
+    <div className="grid grid-cols-4 gap-4 p-4">
+      <div className="col-span-3">
+        <h1 className="text-2xl font-bold mb-2">{slug}</h1>
+        <PostList fetchData={() => fetchPostsByTopicSlug(slug)} />
+      </div>
+
+      <div>
+        <PostCreateForm slug={slug} />
+      </div>
     </div>
   );
 }
